@@ -1,0 +1,87 @@
+{
+  "type": "deathwatch-companion-source-pack",
+  "version": "1.0.0",
+  "source": "Your Book or Homebrew Pack",
+  "entries": [
+    {
+      "category": "Chapter",
+      "name": "Example Chapter",
+      "source": "Your Book or Homebrew Pack",
+      "reference": "p. XX",
+      "notes": "Short personal reminder.",
+      "data": {
+        "package": {
+          "characteristics": {"BS": 0},
+          "skills": [{"name": "Example Skill", "characteristic": "Per", "training": 0}],
+          "abilities": [{"type": "Talent", "name": "Example Grant"}]
+        }
+      }
+    },
+    {
+      "category": "Weapon",
+      "name": "Example Weapon",
+      "source": "Your Book or Homebrew Pack",
+      "reference": "p. XX",
+      "notes": "Enter only the profile you need at the table.",
+      "data": {
+        "class": "Ranged",
+        "range": "",
+        "rof": "",
+        "damage": "",
+        "pen": "",
+        "clipMax": 0,
+        "reload": "",
+        "requisition": "",
+        "renownReq": "",
+        "weight": "",
+        "qualities": "",
+        "keywords": ""
+      }
+    },
+    {
+      "category": "Ability",
+      "name": "Example Squad Ability",
+      "source": "Your Book or Homebrew Pack",
+      "reference": "p. XX",
+      "notes": "",
+      "data": {
+        "abilityType": "Squad Mode",
+        "activation": "",
+        "duration": "",
+        "cohesionCost": 0,
+        "effect": ""
+      }
+    },
+    {
+      "category": "Psychic Power",
+      "name": "Example Psychic Power",
+      "source": "Your Book or Homebrew Pack",
+      "reference": "p. XX",
+      "notes": "",
+      "data": {
+        "action": "",
+        "test": "",
+        "range": "",
+        "sustain": "",
+        "keywords": "",
+        "effect": ""
+      }
+    },
+    {
+      "category": "Advance",
+      "name": "Example Advance",
+      "source": "Your Book or Homebrew Pack",
+      "reference": "p. XX",
+      "notes": "",
+      "data": {
+        "cost": 0,
+        "pool": "General",
+        "tier": "",
+        "repeatable": false,
+        "maxPurchases": 0,
+        "grant": {"type": "None", "target": "", "amount": 0, "characteristic": "", "abilityType": "Talent"},
+        "prerequisites": {"chapters": [], "specialities": [], "minRenown": 0, "minXPSpent": 0, "characteristics": {}, "advances": [], "skills": [], "abilities": []}
+      }
+    }
+  ]
+}
