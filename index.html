@@ -1,0 +1,1042 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#050505" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Deathwatch Companion" />
+  <title>Deathwatch Companion</title>
+  
+  
+  <style>
+:root {
+  --bg: #070a09;
+  --panel: #0e1411;
+  --panel-2: #131b17;
+  --panel-3: #18231d;
+  --line: #26372d;
+  --line-strong: #3f5c4b;
+  --text: #ecf1ee;
+  --muted: #93a49b;
+  --faint: #64736b;
+  --accent: #d5efe1;
+  --accent-2: #7fa18e;
+  --danger: #d17676;
+  --warn: #c5a86b;
+  --good: #86b994;
+  --shadow: 0 18px 55px rgba(0,0,0,.42);
+  --radius: 16px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  color-scheme: dark;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); }
+body {
+  background:
+    radial-gradient(circle at 50% -10%, rgba(74,108,88,.18), transparent 38%),
+    linear-gradient(180deg, #0a0f0d 0, #070a09 55%, #050706 100%);
+  -webkit-tap-highlight-color: transparent;
+}
+button, input, textarea, select { font: inherit; }
+button { color: inherit; }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 2px solid var(--accent-2); outline-offset: 2px;
+}
+
+.app-shell { min-height: 100dvh; display: flex; flex-direction: column; }
+.topbar {
+  position: sticky; top: 0; z-index: 20;
+  padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 10px;
+  background: rgba(7,10,9,.88); backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(63,92,75,.35);
+  display:flex; align-items:center; justify-content:space-between; gap: 12px;
+}
+.brand { display:flex; gap:10px; align-items:center; cursor:pointer; min-width: 0; }
+.watch-mark {
+  width: 34px; height: 34px; display:grid; place-items:center;
+  border: 1px solid var(--line-strong); border-radius: 50%;
+  font-family: Georgia, serif; font-weight: 800; color: var(--accent);
+  background: linear-gradient(145deg, #17231c, #0b100d);
+  box-shadow: inset 0 0 0 4px #0a0f0d, 0 0 20px rgba(127,161,142,.12);
+}
+.brand-title { font-size: .83rem; letter-spacing: .22em; font-weight: 900; white-space: nowrap; }
+.brand-subtitle { margin-top: 2px; color: var(--muted); font-size: .67rem; letter-spacing: .1em; }
+.top-actions { display:flex; gap:8px; }
+.icon-btn, .btn {
+  border:1px solid var(--line); background: var(--panel-2); border-radius: 10px;
+  min-height: 40px; padding: 8px 12px; cursor:pointer;
+}
+.icon-btn { min-width: 42px; display:grid; place-items:center; font-weight:800; }
+.icon-btn:hover, .btn:hover { background: var(--panel-3); border-color: var(--line-strong); }
+.btn.primary { background: #dce8e1; color:#09100c; border-color:#dce8e1; font-weight:800; }
+.btn.danger { border-color: rgba(209,118,118,.5); color: #efb5b5; }
+.btn.ghost { background: transparent; }
+.btn.small { min-height: 34px; padding: 6px 10px; font-size:.82rem; }
+
+.main-content { width: min(100%, 980px); margin: 0 auto; flex:1; padding: 14px 14px calc(90px + var(--safe-bottom)); }
+.bottom-nav {
+  position: fixed; left:0; right:0; bottom:0; z-index:25;
+  display:grid; grid-template-columns: repeat(6, 1fr);
+  background: rgba(8,12,10,.94); backdrop-filter: blur(18px);
+  border-top:1px solid rgba(63,92,75,.45);
+  padding: 6px 6px calc(6px + var(--safe-bottom));
+}
+.nav-item { border:0; background:transparent; color:var(--muted); padding:6px 2px; border-radius:10px; cursor:pointer; }
+.nav-item span { display:block; font-size:1.05rem; line-height:1.1; }
+.nav-item small { display:block; font-size:.62rem; margin-top:3px; }
+.nav-item.active { color:var(--text); background: rgba(127,161,142,.12); }
+
+.hero-card, .card {
+  border:1px solid var(--line); border-radius:var(--radius); background:linear-gradient(160deg, rgba(19,27,23,.97), rgba(11,16,13,.97)); box-shadow:var(--shadow);
+}
+.hero-card { padding: 16px; position:relative; overflow:hidden; }
+.hero-card::after { content:""; position:absolute; width:180px; height:180px; right:-80px; top:-90px; border:1px solid rgba(127,161,142,.12); border-radius:50%; box-shadow:0 0 0 26px rgba(127,161,142,.03),0 0 0 52px rgba(127,161,142,.02); pointer-events:none; }
+.card { padding:14px; margin-top:12px; box-shadow:none; }
+.card h2, .card h3, .hero-card h1 { margin:0; }
+.card-title-row { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; }
+.card-title-row h2 { font-size:1rem; letter-spacing:.06em; text-transform:uppercase; }
+.eyebrow { color:var(--accent-2); font-size:.66rem; letter-spacing:.18em; text-transform:uppercase; font-weight:800; }
+.hero-main { display:flex; gap:14px; align-items:center; position:relative; z-index:1; }
+.portrait {
+  flex:0 0 82px; width:82px; height:82px; border-radius:14px; border:1px solid var(--line-strong);
+  background: radial-gradient(circle at 50% 35%, #263b30, #0c120f 70%); object-fit:cover; display:grid; place-items:center; font-size:2rem; font-weight:900; color:var(--accent-2); overflow:hidden;
+}
+.portrait img { width:100%; height:100%; object-fit:cover; }
+.hero-copy { min-width:0; }
+.hero-copy h1 { font-size:1.45rem; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.subline { margin-top:5px; color:var(--muted); font-size:.86rem; }
+.tag-row { margin-top:10px; display:flex; gap:6px; flex-wrap:wrap; }
+.tag { border:1px solid var(--line); border-radius:999px; padding:4px 7px; color:var(--muted); background:rgba(255,255,255,.015); font-size:.69rem; }
+
+.stat-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; }
+.stat {
+  border:1px solid var(--line); border-radius:12px; background:rgba(5,8,6,.42); padding:10px 8px; text-align:center; cursor:pointer; position:relative;
+}
+.stat:hover { border-color:var(--line-strong); background:rgba(127,161,142,.07); }
+.stat .label { display:block; color:var(--muted); font-size:.64rem; letter-spacing:.08em; font-weight:800; }
+.stat .value { display:block; font-size:1.45rem; margin-top:2px; font-weight:900; }
+.stat .mini { display:block; font-size:.58rem; color:var(--faint); margin-top:2px; }
+
+.resource-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+.resource { padding:11px; border:1px solid var(--line); border-radius:12px; background:rgba(5,8,6,.42); }
+.resource-head { display:flex; justify-content:space-between; gap:8px; align-items:center; }
+.resource-name { color:var(--muted); font-size:.7rem; text-transform:uppercase; letter-spacing:.08em; }
+.resource-value { font-weight:900; }
+.meter { height:5px; border-radius:99px; background:#050706; margin-top:8px; overflow:hidden; border:1px solid rgba(255,255,255,.03); }
+.meter > i { display:block; height:100%; background:linear-gradient(90deg, #486353, #a5c0af); }
+
+.two-col { display:grid; grid-template-columns:1fr; gap:12px; }
+.list { display:flex; flex-direction:column; gap:8px; }
+.list-item {
+  border:1px solid var(--line); background:rgba(5,8,6,.35); border-radius:12px; padding:11px;
+}
+.list-row { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+.item-title { font-weight:800; }
+.item-sub { color:var(--muted); font-size:.76rem; margin-top:3px; line-height:1.35; }
+.item-actions { display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
+
+.weapon { border-left:3px solid var(--line-strong); }
+.weapon-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:10px; }
+.weapon-stat { border:1px solid rgba(63,92,75,.45); border-radius:9px; padding:7px 5px; text-align:center; }
+.weapon-stat b { display:block; font-size:.83rem; }
+.weapon-stat small { display:block; color:var(--faint); font-size:.57rem; text-transform:uppercase; margin-top:2px; }
+.ammo-row { margin-top:10px; display:flex; gap:8px; align-items:center; }
+.ammo-count { font-variant-numeric:tabular-nums; font-weight:900; min-width:68px; }
+
+.skill-row { display:grid; grid-template-columns:1fr auto auto; gap:8px; align-items:center; }
+.skill-target { min-width:50px; text-align:center; font-size:1.05rem; font-weight:900; border:1px solid var(--line); border-radius:9px; padding:7px; cursor:pointer; }
+.skill-target:hover { border-color:var(--line-strong); }
+
+.field-grid { display:grid; grid-template-columns:1fr; gap:10px; }
+.field label { display:block; color:var(--muted); font-size:.7rem; margin-bottom:5px; letter-spacing:.05em; }
+.input, .textarea, .select {
+  width:100%; color:var(--text); background:#090d0b; border:1px solid var(--line); border-radius:10px; padding:10px 11px; min-height:42px;
+}
+.textarea { min-height:100px; resize:vertical; line-height:1.5; }
+.inline-fields { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.checkbox-row { display:flex; align-items:center; gap:8px; color:var(--muted); }
+
+.roll-result { text-align:center; padding:8px 0 4px; }
+.roll-number { font-size:3.2rem; font-weight:950; letter-spacing:-.04em; }
+.roll-number.success { color:var(--good); }
+.roll-number.failure { color:var(--danger); }
+.roll-detail { color:var(--muted); margin-top:5px; }
+.roll-badge { display:inline-block; margin-top:10px; padding:5px 10px; border-radius:999px; border:1px solid var(--line); font-size:.75rem; font-weight:800; }
+
+.modal-backdrop { position:fixed; inset:0; z-index:50; background:rgba(0,0,0,.68); display:flex; align-items:flex-end; justify-content:center; backdrop-filter:blur(6px); }
+.modal-backdrop.hidden { display:none; }
+.modal {
+  width:min(100%, 720px); max-height:88dvh; border:1px solid var(--line-strong); background:#0b100d; border-radius:18px 18px 0 0; box-shadow:var(--shadow); overflow:hidden;
+}
+.modal-head { display:flex; justify-content:space-between; align-items:center; padding:13px 14px; border-bottom:1px solid var(--line); }
+.modal-head h2 { margin:0; font-size:1rem; letter-spacing:.08em; text-transform:uppercase; }
+.modal-body { padding:14px; overflow:auto; max-height:calc(88dvh - 64px); }
+.modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:14px; flex-wrap:wrap; }
+
+.menu-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.menu-grid button { text-align:left; min-height:64px; }
+.menu-grid small { display:block; color:var(--muted); margin-top:4px; font-weight:400; }
+
+.empty { border:1px dashed var(--line); border-radius:12px; color:var(--muted); padding:20px 12px; text-align:center; }
+.section-note { color:var(--muted); font-size:.78rem; line-height:1.5; }
+.source { color:var(--faint); font-size:.67rem; }
+.divider { height:1px; background:var(--line); margin:14px 0; }
+.searchbar { display:flex; gap:8px; margin-bottom:12px; }
+.searchbar .input { flex:1; }
+.tabs { display:flex; gap:6px; overflow:auto; padding-bottom:4px; margin-bottom:10px; }
+.tabs button { white-space:nowrap; }
+.tabs button.active { border-color:var(--accent-2); color:var(--accent); background:rgba(127,161,142,.12); }
+
+.character-strip { display:flex; gap:8px; overflow:auto; margin-top:12px; padding-bottom:2px; }
+.char-chip { flex:0 0 auto; border:1px solid var(--line); border-radius:999px; background:rgba(5,8,6,.4); padding:6px 10px; color:var(--muted); cursor:pointer; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.char-chip.active { color:var(--text); border-color:var(--line-strong); background:rgba(127,161,142,.1); }
+
+.toast { position:fixed; left:50%; bottom:calc(84px + var(--safe-bottom)); transform:translateX(-50%); z-index:80; background:#dce8e1; color:#07100b; border-radius:999px; padding:9px 14px; font-weight:800; font-size:.8rem; box-shadow:var(--shadow); max-width:calc(100% - 28px); text-align:center; }
+.toast.hidden { display:none; }
+
+@media (min-width: 700px) {
+  .main-content { padding-top:20px; }
+  .two-col { grid-template-columns:1fr 1fr; }
+  .stat-grid { grid-template-columns:repeat(9,1fr); }
+  .resource-grid { grid-template-columns:repeat(4,1fr); }
+  .field-grid.two { grid-template-columns:1fr 1fr; }
+  .field-grid.three { grid-template-columns:repeat(3,1fr); }
+  .modal-backdrop { align-items:center; padding:20px; }
+  .modal { border-radius:18px; }
+  .bottom-nav { left:50%; transform:translateX(-50%); width:min(680px, 100%); border-left:1px solid rgba(63,92,75,.35); border-right:1px solid rgba(63,92,75,.35); border-radius:16px 16px 0 0; }
+}
+
+  
+/* ===== v0.3 // Watch Fortress grimdark + living dataslate ===== */
+:root{
+  --bg:#040404;--panel:#0b0c0c;--panel-2:#121313;--panel-3:#191a1a;
+  --line:#333638;--line-strong:#6e7376;--text:#e8e8e5;--muted:#9a9d9e;--faint:#666a6c;
+  --accent:#d0d3d4;--accent-2:#9ca2a5;--danger:#c05b60;--warn:#b79a67;--good:#9eac95;
+  --blood:#7b1519;--blood-hot:#b72d33;--iron:#b6bbbe;--oath:#b9a47e;--radius:7px;
+}
+body{
+  background:
+    linear-gradient(rgba(255,255,255,.013) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.009) 1px,transparent 1px),
+    radial-gradient(circle at 52% -10%,rgba(150,155,158,.14),transparent 34%),
+    radial-gradient(circle at 100% 36%,rgba(123,21,25,.12),transparent 29%),
+    linear-gradient(180deg,#0a0a0a 0,#050505 58%,#020202 100%);
+  background-size:28px 28px,28px 28px,auto,auto,auto;
+}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.26;background:repeating-linear-gradient(118deg,transparent 0 18px,rgba(255,255,255,.018) 19px,transparent 20px 43px)}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.13;background:repeating-linear-gradient(0deg,rgba(255,255,255,.02) 0,rgba(255,255,255,.02) 1px,transparent 1px,transparent 4px);mix-blend-mode:screen}
+.runtime-warning{margin:12px;padding:13px 14px;border:1px solid #8e3034;border-left:4px solid var(--blood-hot);border-radius:5px;background:#190a0b;color:#efdfe0;font-size:.8rem;line-height:1.45;box-shadow:0 12px 32px rgba(0,0,0,.46)}
+.runtime-warning strong{color:#fff;letter-spacing:.08em}.runtime-warning.hidden{display:none}
+.topbar{background:rgba(4,4,4,.95);border-bottom-color:rgba(182,187,190,.28);box-shadow:0 8px 24px rgba(0,0,0,.38)}
+.topbar::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,transparent,var(--iron),var(--blood-hot),var(--iron),transparent);opacity:.48}
+.watch-mark{width:38px;height:38px;border-radius:3px;border-color:#73787b;background:linear-gradient(135deg,#282a2b,#090909 67%);color:#e4e5e5;box-shadow:inset 0 0 0 2px #080808,inset 4px 0 0 rgba(182,187,190,.25),0 0 18px rgba(123,21,25,.18);position:relative;font-size:1.25rem}
+.watch-mark::before,.watch-mark::after{content:"";position:absolute;left:50%;transform:translateX(-50%);width:18px;height:1px;background:#909598}.watch-mark::before{top:8px}.watch-mark::after{bottom:8px}
+.brand-title{font-family:Georgia,"Times New Roman",serif;font-size:.9rem;letter-spacing:.25em}.brand-subtitle{color:#858a8c;text-transform:uppercase}
+.top-actions{align-items:center}.engine-status{height:30px;display:flex;gap:6px;align-items:center;padding:0 8px;border:1px solid #333638;background:#090a0a;color:#8d9294;font-size:.56rem;letter-spacing:.12em;font-weight:900;border-radius:3px;transition:.18s ease}.engine-status i,.live-rune i{width:6px;height:6px;border-radius:50%;background:#8da17f;box-shadow:0 0 8px rgba(141,161,127,.65)}.engine-status.saved{color:#ddd5be;border-color:#756a51;background:#17140d}.engine-status.saved i{background:#c5ad75;box-shadow:0 0 9px rgba(197,173,117,.55)}
+.icon-btn,.btn{border-radius:5px;background:linear-gradient(180deg,#171819,#0c0d0d);border-color:#373a3c}.icon-btn:hover,.btn:hover{border-color:#73787b;background:#1b1c1d}.btn.primary{background:linear-gradient(180deg,#cbd0d2,#9ca2a5);color:#080909;border-color:#cbd0d2;font-weight:900;box-shadow:inset 0 -2px 0 rgba(0,0,0,.3)}.btn.danger{background:linear-gradient(180deg,#2c1012,#160809);border-color:#7e2c31;color:#e9b3b6}.btn:active,.icon-btn:active{transform:translateY(1px)}
+.bottom-nav{background:rgba(4,4,4,.97);border-top-color:rgba(182,187,190,.3)}.nav-item{border-radius:3px}.nav-item.active{color:#f3f3f0;background:linear-gradient(180deg,rgba(182,187,190,.13),rgba(123,21,25,.08));box-shadow:inset 0 2px 0 var(--blood)}
+.hero-card,.card{border-radius:7px;border-color:#35383a;background:linear-gradient(145deg,rgba(18,19,19,.99),rgba(7,7,7,.99))}.hero-card{border-left:5px solid #a7adb0;background:linear-gradient(90deg,rgba(176,181,184,.09),transparent 5%),radial-gradient(circle at 86% 16%,rgba(139,23,28,.13),transparent 30%),linear-gradient(145deg,rgba(20,21,21,.99),rgba(6,6,6,.99))}.hero-card::before{content:"WATCH FORTRESS // ORDO XENOS";position:absolute;right:-34px;bottom:28px;transform:rotate(-90deg);color:rgba(183,45,51,.11);font-size:.56rem;letter-spacing:.18em;font-weight:900}.hero-card::after{border-color:rgba(185,190,193,.08);box-shadow:0 0 0 26px rgba(118,23,27,.025),0 0 0 52px rgba(185,190,193,.018)}
+.card{position:relative;overflow:hidden}.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(180deg,transparent,#4d5153 18%,#4d5153 82%,transparent);opacity:.65}.card-title-row h2,.modal-head h2{font-family:Georgia,"Times New Roman",serif;letter-spacing:.11em}.card-title-row h2::before{content:"// ";color:#62676a;font-family:ui-monospace,monospace;font-size:.75em}.eyebrow{color:#aeb4b7}.eyebrow::before{content:"✠  ";color:#7b7f82}
+.portrait{border-radius:4px;background:radial-gradient(circle at 50% 32%,#343738,#090909 70%);border-color:#686d70;box-shadow:inset 6px 0 0 rgba(185,190,193,.16)}.tag,.stat,.resource,.list-item,.weapon-stat,.skill-target,.input,.textarea,.select,.empty,.char-chip,.toast{border-radius:4px}
+.stat{background:linear-gradient(180deg,rgba(26,27,27,.75),rgba(7,7,7,.75))}.stat:hover{background:linear-gradient(180deg,rgba(45,47,48,.7),rgba(20,7,8,.7));border-color:#777c7f}.stat .value,.roll-number{font-family:Georgia,"Times New Roman",serif}
+.meter{border-radius:2px}.meter>i{background:linear-gradient(90deg,#621519,#a62a2f 62%,#c3c6c7)}
+.live-resource{cursor:default}.resource-actions{display:grid;grid-template-columns:36px 1fr 36px;gap:5px;margin-top:8px}.micro-btn{height:30px;border:1px solid #323537;background:#0b0c0c;color:#c1c4c5;border-radius:3px;font-weight:900;cursor:pointer}.micro-btn:active{transform:translateY(1px);background:#1a1b1b}.micro-btn.resource-edit{font-size:.55rem;letter-spacing:.1em;color:#858a8c;font-weight:800}
+.weapon{border-left:4px solid #7d8589;background:linear-gradient(90deg,rgba(174,179,182,.055),transparent 20%),rgba(5,8,6,.35)}.weapon::before{content:"ARMOURY SEAL";display:block;color:#6d7173;font-size:.54rem;letter-spacing:.15em;margin-bottom:7px}.weapon .item-title::before{content:"† ";color:#8e9497}.weapon-stat{border-color:rgba(120,125,128,.45)}
+.input,.textarea,.select{background:#070808}.skill-target{background:#111212}
+.watch-log{border:1px solid #292c2e;background:#070808}.log-row{display:grid;grid-template-columns:62px 1fr;gap:9px;padding:8px 10px;border-bottom:1px solid #202224;font-size:.72rem;line-height:1.35}.log-row:last-child{border-bottom:0}.log-time{color:#656a6c;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.65rem}.log-roll{border-left:2px solid #858a8d}.log-resource{border-left:2px solid #7c251f}.log-armoury{border-left:2px solid #8f835f}.log-system{border-left:2px solid #4e5751;color:#aeb4b0}.live-rune{display:flex;gap:6px;align-items:center;color:#899483;font-size:.58rem;letter-spacing:.14em;font-weight:900}
+.modal{background:linear-gradient(160deg,#111212,#060606);border-color:#6a7073;border-radius:7px 7px 0 0}.modal::before{content:"WATCH FORTRESS ARCHIVE";display:block;padding:5px 14px 4px;color:#6f7477;background:#050505;border-bottom:1px solid #232526;font-size:.48rem;letter-spacing:.19em;font-weight:900}.modal-head{background:linear-gradient(90deg,rgba(185,190,193,.08),rgba(118,23,27,.10))}.roll-number.failure{color:#cf666a}.roll-number.success{color:#b9c5b2}.toast{background:#bfc3c5}
+@media(max-width:420px){.engine-status span{display:none}.engine-status{width:26px;padding:0;justify-content:center}.brand-subtitle{max-width:175px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+@media(min-width:700px){.modal{border-radius:7px}}
+
+</style>
+</head>
+<body>
+  <div id="runtimeWarning" class="runtime-warning"><strong>INTERACTIVE ENGINE NOT RUNNING.</strong> This viewer is rendering the dataslate shell while blocking JavaScript. Open the hosted HTTPS/PWA version in Safari for buttons, rolls, saving, inventory, and menus.</div>
+  <div id="app" class="app-shell">
+    <header class="topbar">
+      <div class="brand" role="button" tabindex="0" id="brandHome" aria-label="Go to character overview">
+        <div class="watch-mark" aria-hidden="true">I</div>
+        <div>
+          <div class="brand-title">DEATHWATCH</div>
+          <div class="brand-subtitle">Watch Fortress Dataslate // v0.3</div>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="engine-status" id="engineStatus" aria-label="Interactive engine online"><i></i><span>ONLINE</span></div>
+        <button class="icon-btn" id="rollBtn" aria-label="Quick d100 roll" title="Quick d100">d100</button>
+        <button class="icon-btn" id="menuBtn" aria-label="Open menu" title="Menu">☰</button>
+      </div>
+    </header>
+
+    <main id="main" class="main-content" tabindex="-1"></main>
+
+    <nav class="bottom-nav" id="bottomNav" aria-label="Character sections">
+      <button data-view="overview" class="nav-item active"><span>⌂</span><small>Overview</small></button>
+      <button data-view="combat" class="nav-item"><span>✚</span><small>Combat</small></button>
+      <button data-view="skills" class="nav-item"><span>◎</span><small>Skills</small></button>
+      <button data-view="abilities" class="nav-item"><span>✦</span><small>Abilities</small></button>
+      <button data-view="gear" class="nav-item"><span>▣</span><small>Gear</small></button>
+      <button data-view="advances" class="nav-item"><span>↑</span><small>XP</small></button>
+    </nav>
+  </div>
+
+  <div class="modal-backdrop hidden" id="modalBackdrop" aria-hidden="true">
+    <section class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <h2 id="modalTitle">Modal</h2>
+        <button class="icon-btn" id="closeModal" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <input type="file" id="importFile" accept="application/json,.json" hidden />
+  <input type="file" id="portraitFile" accept="image/*" hidden />
+
+  <script>
+(() => {
+  'use strict';
+
+  const STORAGE_KEY = 'deathwatchCompanion.v0.3';
+  const VERSION = '0.3.1';
+  const CHAR_KEYS = ['WS','BS','S','T','Ag','Int','Per','WP','Fel'];
+  const CHAR_LABELS = {
+    WS:'Weapon Skill', BS:'Ballistic Skill', S:'Strength', T:'Toughness', Ag:'Agility',
+    Int:'Intelligence', Per:'Perception', WP:'Willpower', Fel:'Fellowship'
+  };
+  const LOCATIONS = ['Head','Body','Left Arm','Right Arm','Left Leg','Right Leg'];
+
+  const STARTER_COMPENDIUM = [
+    {id:uid(), category:'Skill', name:'Awareness', characteristic:'Per', source:'Starter', notes:'Quick-reference entry. Add your owned source/page notes as needed.'},
+    {id:uid(), category:'Skill', name:'Athletics', characteristic:'S', source:'Starter', notes:'Quick-reference entry.'},
+    {id:uid(), category:'Skill', name:'Command', characteristic:'Fel', source:'Starter', notes:'Quick-reference entry.'},
+    {id:uid(), category:'Skill', name:'Dodge', characteristic:'Ag', source:'Starter', notes:'Quick-reference entry.'},
+    {id:uid(), category:'Skill', name:'Medicae', characteristic:'Int', source:'Starter', notes:'Quick-reference entry.'},
+    {id:uid(), category:'Skill', name:'Stealth', characteristic:'Ag', source:'Starter', notes:'Quick-reference entry.'},
+    {id:uid(), category:'Skill', name:'Survival', characteristic:'Per', source:'Starter', notes:'Quick-reference entry.'},
+    {id:uid(), category:'Skill', name:'Tactics', characteristic:'Int', source:'Starter', notes:'Quick-reference entry.'},
+    {id:uid(), category:'Skill', name:'Tech-Use', characteristic:'Int', source:'Starter', notes:'Quick-reference entry.'},
+    {id:uid(), category:'Ability', name:'Solo Mode Ability', source:'Starter', notes:'Replace with the character’s actual ability and source reference.'},
+    {id:uid(), category:'Ability', name:'Squad Mode Ability', source:'Starter', notes:'Replace with the character’s actual ability and source reference.'},
+    {id:uid(), category:'Gear', name:'Mission Wargear', source:'Starter', notes:'Generic placeholder for requisitioned mission equipment.'},
+    {id:uid(), category:'Weapon', name:'Custom Ranged Weapon', source:'Starter', data:{class:'Ranged', range:'—', rof:'—', damage:'—', pen:'—', clipMax:0, reload:'—', qualities:''}, notes:'Enter statistics from a source you own.'},
+    {id:uid(), category:'Weapon', name:'Custom Melee Weapon', source:'Starter', data:{class:'Melee', range:'—', rof:'—', damage:'—', pen:'—', clipMax:0, reload:'—', qualities:''}, notes:'Enter statistics from a source you own.'}
+  ];
+
+  const el = id => document.getElementById(id);
+  const main = el('main');
+  const nav = el('bottomNav');
+  const backdrop = el('modalBackdrop');
+  const modalTitle = el('modalTitle');
+  const modalBody = el('modalBody');
+  const closeModalBtn = el('closeModal');
+  const importFile = el('importFile');
+  const portraitFile = el('portraitFile');
+
+  let state = loadState();
+  let view = 'overview';
+  let toastTimer = null;
+  let pendingPortraitCharId = null;
+
+  // A static HTML preview can render the shell while blocking JavaScript.
+  // Hiding this warning is the first proof that the interactive engine is actually running.
+  document.getElementById('runtimeWarning')?.classList.add('hidden');
+
+  // Seed the demo only once on a genuinely fresh install.
+  // After that, an empty character roster is valid and stays empty.
+  if (!state.settings.initialized) {
+    if (!state.characters.length) {
+      const c = createDemoCharacter();
+      state.characters.push(c);
+      state.activeId = c.id;
+    }
+    state.settings.initialized = true;
+    saveState();
+  }
+
+  function uid() {
+    return (globalThis.crypto?.randomUUID?.() || `id-${Date.now()}-${Math.random().toString(16).slice(2)}`);
+  }
+
+  function createCharacter(name='New Battle-Brother') {
+    const characteristics = {};
+    CHAR_KEYS.forEach(k => characteristics[k] = 30);
+    return {
+      id: uid(), name, chapter:'', speciality:'', rank:'Battle-Brother', squadRole:'',
+      demeanour:'', chapterDemeanour:'', past:'', portrait:'',
+      characteristics,
+      resources: {
+        wounds:{current:20,max:20}, fate:{current:3,max:3}, fatigue:{current:0,max:10},
+        cohesion:{current:0,max:0}, insanity:{current:0,max:100}, corruption:{current:0,max:100}
+      },
+      xp:{earned:0,spent:0}, renown:{value:0,label:''}, initiativeBonus:0,
+      armour: LOCATIONS.map(loc => ({id:uid(), location:loc, ap:0, notes:''})),
+      armourNotes:'', powerArmourHistory:'',
+      weapons:[], gear:[], skills:[], abilities:[], advances:[], effects:[], activity:[], notes:'',
+      createdAt:new Date().toISOString(), updatedAt:new Date().toISOString()
+    };
+  }
+
+  function createDemoCharacter() {
+    const c = createCharacter('Brother Acastus // DEMO');
+    c.chapter = 'Raptors';
+    c.speciality = 'Tactical Marine';
+    c.rank = 'Battle-Brother';
+    c.squadRole = 'Marksman';
+    c.demeanour = 'Measured';
+    c.chapterDemeanour = 'Pragmatic';
+    c.past = 'Demonstration personnel file. Replace this record with your own Battle-Brother.';
+    c.characteristics = {WS:45,BS:52,S:44,T:46,Ag:48,Int:41,Per:50,WP:43,Fel:36};
+    c.resources.wounds = {current:22,max:22};
+    c.resources.fate = {current:3,max:3};
+    c.resources.fatigue = {current:0,max:10};
+    c.resources.cohesion = {current:3,max:5};
+    c.xp = {earned:1000,spent:500};
+    c.renown = {value:8,label:'Demo'};
+    c.armour.forEach(a => { a.ap = a.location === 'Head' ? 7 : 8; a.notes = 'Demo value'; });
+    c.powerArmourHistory = 'Demonstration armour history entry.';
+    c.armourNotes = 'Demo numbers are included only to make the controls testable. Replace them from your own source material.';
+    c.weapons = [
+      {id:uid(),name:'Boltgun // DEMO',class:'Ranged',range:'100m',rof:'S/3/—',damage:'Demo',pen:'Demo',clipCurrent:28,clipMax:28,reload:'Full',qualities:'Demo profile',source:'Demo',notes:'Use Fire −1, +1, Reload, and Edit to verify the armoury is live.'},
+      {id:uid(),name:'Combat Blade // DEMO',class:'Melee',range:'Melee',rof:'—',damage:'Demo',pen:'Demo',clipCurrent:0,clipMax:0,reload:'—',qualities:'Demo profile',source:'Demo',notes:''}
+    ];
+    c.skills = [
+      {id:uid(),name:'Awareness',characteristic:'Per',training:10,source:'Demo',notes:'Tap the target number to roll.'},
+      {id:uid(),name:'Stealth',characteristic:'Ag',training:0,source:'Demo',notes:''},
+      {id:uid(),name:'Tactics',characteristic:'Int',training:0,source:'Demo',notes:''}
+    ];
+    c.abilities = [
+      {id:uid(),name:'Solo Mode Ability // DEMO',type:'Solo Mode',source:'Demo',notes:'Replace with the actual ability from a source you own.'},
+      {id:uid(),name:'Squad Mode Ability // DEMO',type:'Squad Mode',source:'Demo',notes:'Replace with the actual ability from a source you own.'}
+    ];
+    c.gear = [{id:uid(),name:'Mission Wargear // DEMO',qty:1,requisition:'—',missionIssued:true,source:'Demo',notes:'Editable demonstration entry.'}];
+    c.advances = [{id:uid(),name:'Example Advance // DEMO',cost:500,source:'Demo',notes:'Delete when starting a real character.',date:new Date().toISOString(),counted:true}];
+    c.notes = 'This starter record exists so every major screen has something interactive immediately.';
+    c.activity = [{id:uid(),at:new Date().toISOString(),kind:'system',message:'Dataslate authenticated. Demo personnel record loaded.'}];
+    return c;
+  }
+
+  function defaultState() {
+    return {
+      version: VERSION,
+      activeId:null,
+      characters:[],
+      compendium: structuredClone(STARTER_COMPENDIUM),
+      settings:{degreeMethod:'margin', lastView:'overview', initialized:false}
+    };
+  }
+
+  function normalizeCharacter(c) {
+    const base = createCharacter(c?.name || 'Battle-Brother');
+    const merged = {...base, ...c};
+    merged.characteristics = {...base.characteristics, ...(c.characteristics || {})};
+    merged.resources = {...base.resources, ...(c.resources || {})};
+    Object.keys(base.resources).forEach(k => merged.resources[k] = {...base.resources[k], ...(c.resources?.[k] || {})});
+    merged.xp = {...base.xp, ...(c.xp || {})};
+    merged.renown = {...base.renown, ...(c.renown || {})};
+    ['armour','weapons','gear','skills','abilities','advances','effects','activity'].forEach(k => {
+      if (!Array.isArray(merged[k])) merged[k] = [];
+    });
+    if (!merged.armour.length) merged.armour = structuredClone(base.armour);
+    return merged;
+  }
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return defaultState();
+      const parsed = JSON.parse(raw);
+      const out = {...defaultState(), ...parsed};
+      out.settings = {...defaultState().settings, ...(parsed.settings || {})};
+      out.characters = Array.isArray(parsed.characters) ? parsed.characters.map(normalizeCharacter) : [];
+      out.compendium = Array.isArray(parsed.compendium) ? parsed.compendium : structuredClone(STARTER_COMPENDIUM);
+      if (!out.activeId || !out.characters.some(c => c.id === out.activeId)) out.activeId = out.characters[0]?.id || null;
+      return out;
+    } catch (err) {
+      console.warn('Could not load saved data:', err);
+      return defaultState();
+    }
+  }
+
+  function saveState() {
+    state.version = VERSION;
+    const c = activeChar();
+    if (c) c.updatedAt = new Date().toISOString();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    pulseSave();
+  }
+
+  function activeChar() {
+    return state.characters.find(c => c.id === state.activeId) || state.characters[0];
+  }
+
+  function esc(value='') {
+    return String(value).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+  }
+
+  function n(value, fallback=0) {
+    const num = Number(value);
+    return Number.isFinite(num) ? num : fallback;
+  }
+
+  function clamp(value, min, max) { return Math.min(max, Math.max(min, value)); }
+
+  function showToast(message) {
+    const t = el('toast');
+    t.textContent = message;
+    t.classList.remove('hidden');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.add('hidden'), 1900);
+  }
+
+  function pulseSave(label='AUTOSAVED') {
+    const status = el('engineStatus');
+    if (!status) return;
+    status.classList.add('saved');
+    const span = status.querySelector('span');
+    if (span) span.textContent = label;
+    clearTimeout(pulseSave._t);
+    pulseSave._t = setTimeout(() => {
+      status.classList.remove('saved');
+      if (span) span.textContent = 'ONLINE';
+    }, 1050);
+  }
+
+  function recordActivity(message, kind='system') {
+    const c = activeChar();
+    if (!c) return;
+    if (!Array.isArray(c.activity)) c.activity = [];
+    c.activity.unshift({id:uid(), at:new Date().toISOString(), kind, message:String(message)});
+    c.activity = c.activity.slice(0,40);
+  }
+
+  function activityTime(iso) {
+    try { return new Intl.DateTimeFormat(undefined,{hour:'numeric',minute:'2-digit'}).format(new Date(iso)); }
+    catch { return ''; }
+  }
+
+  function openModal(title, html, afterOpen) {
+    modalTitle.textContent = title;
+    modalBody.innerHTML = html;
+    backdrop.classList.remove('hidden');
+    backdrop.setAttribute('aria-hidden','false');
+    setTimeout(() => modalBody.querySelector('input,select,textarea,button')?.focus(), 20);
+    if (afterOpen) afterOpen();
+  }
+
+  function closeModal() {
+    backdrop.classList.add('hidden');
+    backdrop.setAttribute('aria-hidden','true');
+    modalBody.innerHTML = '';
+  }
+
+  function field(label, name, value='', type='text', opts='') {
+    return `<div class="field"><label for="${name}">${esc(label)}</label><input class="input" id="${name}" name="${name}" type="${type}" value="${esc(value)}" ${opts}></div>`;
+  }
+  function area(label, name, value='', rows=4) {
+    return `<div class="field"><label for="${name}">${esc(label)}</label><textarea class="textarea" id="${name}" name="${name}" rows="${rows}">${esc(value)}</textarea></div>`;
+  }
+  function selectField(label, name, options, selected='') {
+    return `<div class="field"><label for="${name}">${esc(label)}</label><select class="select" id="${name}" name="${name}">${options.map(o => {
+      const val = typeof o === 'string' ? o : o.value; const lab = typeof o === 'string' ? o : o.label;
+      return `<option value="${esc(val)}" ${String(val)===String(selected)?'selected':''}>${esc(lab)}</option>`;
+    }).join('')}</select></div>`;
+  }
+
+  function setView(next) {
+    view = next;
+    state.settings.lastView = next;
+    saveState();
+    [...nav.querySelectorAll('[data-view]')].forEach(b => b.classList.toggle('active', b.dataset.view === next));
+    render();
+    main.focus({preventScroll:true});
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function render() {
+    const c = activeChar();
+    if (!c) return renderNoCharacters();
+    const renderers = {overview:renderOverview, combat:renderCombat, skills:renderSkills, abilities:renderAbilities, gear:renderGear, advances:renderAdvances};
+    main.innerHTML = (renderers[view] || renderOverview)(c);
+    bindViewEvents();
+  }
+
+  function renderNoCharacters() {
+    main.innerHTML = `<div class="hero-card"><div class="eyebrow">Watch Fortress Archive</div><h1>No Battle-Brother selected</h1><p class="section-note">Create a character to begin.</p><button class="btn primary" data-action="new-character">Create Character</button></div>`;
+    bindViewEvents();
+  }
+
+  function charStrip(c) {
+    return `<div class="character-strip">${state.characters.map(x => `<button class="char-chip ${x.id===c.id?'active':''}" data-char-id="${x.id}">${esc(x.name)}</button>`).join('')}<button class="char-chip" data-action="new-character">＋ New</button></div>`;
+  }
+
+  function hero(c) {
+    const sub = [c.chapter, c.speciality, c.rank].filter(Boolean).join(' • ') || 'Unassigned Battle-Brother';
+    return `<section class="hero-card">
+      <div class="hero-main">
+        <button class="portrait" data-action="portrait" aria-label="Change portrait">${c.portrait ? `<img src="${c.portrait}" alt="${esc(c.name)} portrait">` : esc((c.name || 'B')[0].toUpperCase())}</button>
+        <div class="hero-copy"><div class="eyebrow">Adeptus Astartes Personnel Record</div><h1>${esc(c.name)}</h1><div class="subline">${esc(sub)}</div>
+          <div class="tag-row">${c.squadRole?`<span class="tag">${esc(c.squadRole)}</span>`:''}<span class="tag">Renown ${n(c.renown.value)}</span><span class="tag">XP ${Math.max(0,n(c.xp.earned)-n(c.xp.spent))} available</span></div>
+        </div>
+      </div>${charStrip(c)}
+    </section>`;
+  }
+
+  function characteristics(c) {
+    return `<section class="card"><div class="card-title-row"><h2>Characteristics</h2><button class="btn small" data-action="edit-characteristics">Edit</button></div>
+      <div class="stat-grid">${CHAR_KEYS.map(k => `<button class="stat" data-roll-char="${k}"><span class="label">${k}</span><span class="value">${n(c.characteristics[k])}</span><span class="mini">tap to test</span></button>`).join('')}</div></section>`;
+  }
+
+  function resourceCard(name, data, action) {
+    const cur = n(data.current), max = Math.max(0,n(data.max));
+    const pct = max > 0 ? clamp((cur/max)*100,0,100) : 0;
+    return `<button class="resource" data-action="${action}" style="text-align:left;color:inherit;cursor:pointer"><div class="resource-head"><span class="resource-name">${esc(name)}</span><span class="resource-value">${cur}${max?` / ${max}`:''}</span></div><div class="meter"><i style="width:${pct}%"></i></div></button>`;
+  }
+
+  function resourceControlCard(name,key,data) {
+    const max=Math.max(0,n(data.max)); const cur=n(data.current); const pct=max?clamp((cur/max)*100,0,100):0;
+    return `<div class="resource live-resource"><div class="resource-head"><span class="resource-name">${esc(name)}</span><span class="resource-value">${cur}${max?` / ${max}`:''}</span></div><div class="meter"><i style="width:${pct}%"></i></div><div class="resource-actions"><button class="micro-btn" data-resource-delta="${key}" data-delta="-1">−</button><button class="micro-btn resource-edit" data-resource-edit="${key}">EDIT</button><button class="micro-btn" data-resource-delta="${key}" data-delta="1">＋</button></div></div>`;
+  }
+
+  function adjustResource(key,delta) {
+    const r=activeChar()?.resources?.[key]; if(!r)return; const before=n(r.current); const max=Math.max(0,n(r.max));
+    r.current=max>0?clamp(before+n(delta),0,max):Math.max(0,before+n(delta));
+    if(r.current!==before)recordActivity(`${key[0].toUpperCase()+key.slice(1)} ${delta>0?'+':''}${n(delta)} → ${r.current}`,'resource');
+    saveState(); render();
+  }
+
+  function renderActivity(c) {
+    const rows=(c.activity||[]).slice(0,8);
+    if(!rows.length)return `<div class="empty">No Watch Log entries yet. Roll a test or change a resource to begin the record.</div>`;
+    return `<div class="watch-log">${rows.map(x=>`<div class="log-row log-${esc(x.kind||'system')}"><span class="log-time">${esc(activityTime(x.at))}</span><span>${esc(x.message)}</span></div>`).join('')}</div>`;
+  }
+
+  function renderOverview(c) {
+    const xpAvail = Math.max(0,n(c.xp.earned)-n(c.xp.spent));
+    return `${hero(c)}${characteristics(c)}
+      <section class="card"><div class="card-title-row"><h2>Readiness</h2><button class="btn small" data-action="edit-resources">Edit</button></div>
+        <div class="resource-grid">
+          ${resourceControlCard('Wounds','wounds',c.resources.wounds)}
+          ${resourceControlCard('Fate','fate',c.resources.fate)}
+          ${resourceControlCard('Fatigue','fatigue',c.resources.fatigue)}
+          ${resourceControlCard('Cohesion','cohesion',c.resources.cohesion)}
+        </div>
+      </section>
+      <div class="two-col">
+        <section class="card"><div class="card-title-row"><h2>Service Record</h2><button class="btn small" data-action="edit-profile">Edit</button></div>
+          <div class="list">
+            <div class="list-item"><div class="item-title">${esc(c.chapter || 'Chapter not set')}</div><div class="item-sub">Chapter</div></div>
+            <div class="list-item"><div class="item-title">${esc(c.speciality || 'Speciality not set')}</div><div class="item-sub">Speciality</div></div>
+            <div class="list-item"><div class="item-title">${esc(c.demeanour || '—')}</div><div class="item-sub">Personal Demeanour</div></div>
+            <div class="list-item"><div class="item-title">${esc(c.chapterDemeanour || '—')}</div><div class="item-sub">Chapter Demeanour</div></div>
+          </div>
+        </section>
+        <section class="card"><div class="card-title-row"><h2>Progression</h2><button class="btn small" data-action="edit-progression">Edit</button></div>
+          <div class="list">
+            <div class="list-item"><div class="item-title">${xpAvail} XP</div><div class="item-sub">${n(c.xp.earned)} earned • ${n(c.xp.spent)} spent</div></div>
+            <div class="list-item"><div class="item-title">${n(c.renown.value)} ${esc(c.renown.label || '')}</div><div class="item-sub">Renown</div></div>
+            <div class="list-item"><div class="item-title">${c.advances.length}</div><div class="item-sub">Purchased advances recorded</div></div>
+          </div>
+        </section>
+      </div>
+      <section class="card"><div class="card-title-row"><h2>Past & Notes</h2><button class="btn small" data-action="edit-story">Edit</button></div>
+        <p class="section-note"><strong>Past:</strong> ${esc(c.past || 'No past event recorded.')}</p>
+        <div class="divider"></div><p class="section-note">${esc(c.notes || 'No campaign notes yet.')}</p>
+      </section>
+      <section class="card watch-log-card"><div class="card-title-row"><h2>Watch Log</h2><span class="live-rune"><i></i> LIVE</span></div>${renderActivity(c)}</section>`;
+  }
+
+  function renderCombat(c) {
+    const armour = c.armour.map(a => `<div class="list-item"><div class="list-row"><div><div class="item-title">${esc(a.location)}</div><div class="item-sub">${esc(a.notes || 'No notes')}</div></div><div class="skill-target" data-edit-armour="${a.id}">${n(a.ap)} AP</div></div></div>`).join('');
+    const weapons = c.weapons.length ? c.weapons.map(w => weaponHtml(w)).join('') : `<div class="empty">No weapons recorded. Add one or pull a template from the Compendium.</div>`;
+    const effects = c.effects.length ? c.effects.map(e => `<div class="list-item"><div class="list-row"><div><div class="item-title">${esc(e.name)}</div><div class="item-sub">${esc(e.notes || '')}</div></div><button class="btn small danger" data-delete-effect="${e.id}">Clear</button></div></div>`).join('') : `<div class="empty">No temporary effects.</div>`;
+    return `${hero(c)}
+      <section class="card"><div class="card-title-row"><h2>Combat State</h2><button class="btn small" data-action="edit-resources">Edit</button></div>
+        <div class="resource-grid">${resourceControlCard('Wounds','wounds',c.resources.wounds)}${resourceControlCard('Fate','fate',c.resources.fate)}${resourceControlCard('Fatigue','fatigue',c.resources.fatigue)}${resourceControlCard('Cohesion','cohesion',c.resources.cohesion)}</div>
+        <div class="inline-fields" style="margin-top:8px"><button class="btn" data-action="initiative">Roll Initiative</button><button class="btn" data-action="add-effect">＋ Effect</button></div>
+      </section>
+      <section class="card"><div class="card-title-row"><h2>Weapons</h2><div><button class="btn small" data-action="compendium-weapons">Library</button> <button class="btn small primary" data-action="add-weapon">＋ Add</button></div></div><div class="list">${weapons}</div></section>
+      <div class="two-col">
+        <section class="card"><div class="card-title-row"><h2>Armour</h2><button class="btn small" data-action="armour-notes">Notes</button></div><div class="list">${armour}</div></section>
+        <section class="card"><div class="card-title-row"><h2>Effects</h2><button class="btn small" data-action="add-effect">＋ Add</button></div><div class="list">${effects}</div></section>
+      </div>`;
+  }
+
+  function weaponHtml(w) {
+    const max = Math.max(0,n(w.clipMax));
+    const cur = clamp(n(w.clipCurrent),0,max || 9999);
+    return `<div class="list-item weapon">
+      <div class="list-row"><div><div class="item-title">${esc(w.name)}</div><div class="item-sub">${esc(w.class || 'Weapon')} ${w.source?`• ${esc(w.source)}`:''}</div></div>
+        <div class="item-actions"><button class="btn small" data-edit-weapon="${w.id}">Edit</button><button class="btn small danger" data-delete-weapon="${w.id}">×</button></div></div>
+      <div class="weapon-stats">
+        <div class="weapon-stat"><b>${esc(w.range || '—')}</b><small>Range</small></div>
+        <div class="weapon-stat"><b>${esc(w.rof || '—')}</b><small>RoF</small></div>
+        <div class="weapon-stat"><b>${esc(w.damage || '—')}</b><small>Damage</small></div>
+        <div class="weapon-stat"><b>${esc(w.pen || '—')}</b><small>Pen</small></div>
+      </div>
+      ${w.qualities?`<div class="item-sub" style="margin-top:8px"><strong>Qualities:</strong> ${esc(w.qualities)}</div>`:''}
+      ${max>0?`<div class="ammo-row"><span class="ammo-count">${cur} / ${max}</span><button class="btn small" data-ammo-minus="${w.id}">Fire −1</button><button class="btn small" data-ammo-plus="${w.id}">＋1</button><button class="btn small" data-reload="${w.id}">Reload</button><span class="source">${esc(w.reload || '')}</span></div>`:''}
+      ${w.notes?`<div class="item-sub" style="margin-top:8px">${esc(w.notes)}</div>`:''}
+    </div>`;
+  }
+
+  function renderSkills(c) {
+    const list = c.skills.length ? c.skills.map(s => {
+      const base = n(c.characteristics[s.characteristic]); const bonus = n(s.training); const target = base + bonus;
+      return `<div class="list-item skill-row"><div><div class="item-title">${esc(s.name)}</div><div class="item-sub">${esc(CHAR_LABELS[s.characteristic] || s.characteristic)} ${bonus?`${bonus>0?'+':''}${bonus}`:''} ${s.source?`• ${esc(s.source)}`:''}</div></div><button class="skill-target" data-roll-skill="${s.id}">${target}</button><button class="btn small" data-edit-skill="${s.id}">Edit</button></div>`;
+    }).join('') : `<div class="empty">No skills added. Use the Compendium to add starter skills or create your own.</div>`;
+    return `${hero(c)}${characteristics(c)}
+      <section class="card"><div class="card-title-row"><h2>Skills</h2><div><button class="btn small" data-action="compendium-skills">Compendium</button> <button class="btn small primary" data-action="add-skill">＋ Add</button></div></div><div class="list">${list}</div></section>`;
+  }
+
+  function renderAbilities(c) {
+    const groups = ['Talent','Trait','Ability','Solo Mode','Squad Mode','Honour','Distinction','Other'];
+    const html = groups.map(g => {
+      const arr = c.abilities.filter(a => (a.type || 'Other') === g);
+      if (!arr.length) return '';
+      return `<section class="card"><div class="card-title-row"><h2>${esc(g)}</h2></div><div class="list">${arr.map(a => `<div class="list-item"><div class="list-row"><div><div class="item-title">${esc(a.name)}</div><div class="item-sub">${esc(a.notes || '')}</div>${a.source?`<div class="source">${esc(a.source)}</div>`:''}</div><div class="item-actions"><button class="btn small" data-edit-ability="${a.id}">Edit</button><button class="btn small danger" data-delete-ability="${a.id}">×</button></div></div></div>`).join('')}</div></section>`;
+    }).join('');
+    return `${hero(c)}<section class="card"><div class="card-title-row"><h2>Abilities & Talents</h2><div><button class="btn small" data-action="compendium-abilities">Compendium</button> <button class="btn small primary" data-action="add-ability">＋ Add</button></div></div><p class="section-note">Store names, your own notes, and source/page references without needing to reproduce a rulebook inside the app.</p></section>${html || `<section class="card"><div class="empty">No abilities recorded yet.</div></section>`}`;
+  }
+
+  function renderGear(c) {
+    const gear = c.gear.length ? c.gear.map(g => `<div class="list-item"><div class="list-row"><div><div class="item-title">${esc(g.name)} ${n(g.qty,1)>1?`×${n(g.qty,1)}`:''}</div><div class="item-sub">${g.missionIssued?'Mission issued • ':''}${g.requisition!==''&&g.requisition!=null?`Req ${esc(g.requisition)} • `:''}${esc(g.notes || '')}</div>${g.source?`<div class="source">${esc(g.source)}</div>`:''}</div><div class="item-actions"><button class="btn small" data-edit-gear="${g.id}">Edit</button><button class="btn small danger" data-delete-gear="${g.id}">×</button></div></div></div>`).join('') : `<div class="empty">No equipment recorded.</div>`;
+    return `${hero(c)}<section class="card"><div class="card-title-row"><h2>Wargear & Requisition</h2><div><button class="btn small" data-action="compendium-gear">Compendium</button> <button class="btn small primary" data-action="add-gear">＋ Add</button></div></div><div class="list">${gear}</div></section>
+      <section class="card"><div class="card-title-row"><h2>Power Armour</h2><button class="btn small" data-action="armour-notes">Edit</button></div><p class="section-note"><strong>History:</strong> ${esc(c.powerArmourHistory || 'Not recorded.')}</p><div class="divider"></div><p class="section-note">${esc(c.armourNotes || 'No armour notes.')}</p></section>`;
+  }
+
+  function renderAdvances(c) {
+    const avail = Math.max(0,n(c.xp.earned)-n(c.xp.spent));
+    const list = c.advances.length ? [...c.advances].reverse().map(a => `<div class="list-item"><div class="list-row"><div><div class="item-title">${esc(a.name)}</div><div class="item-sub">${n(a.cost)} XP ${a.source?`• ${esc(a.source)}`:''}</div>${a.notes?`<div class="source">${esc(a.notes)}</div>`:''}</div><button class="btn small danger" data-delete-advance="${a.id}">Undo</button></div></div>`).join('') : `<div class="empty">No purchased advances recorded.</div>`;
+    return `${hero(c)}<section class="card"><div class="card-title-row"><h2>Experience</h2><button class="btn small" data-action="edit-progression">Edit Totals</button></div>
+      <div class="resource-grid"><div class="resource"><div class="resource-head"><span class="resource-name">Earned</span><span class="resource-value">${n(c.xp.earned)}</span></div></div><div class="resource"><div class="resource-head"><span class="resource-name">Spent</span><span class="resource-value">${n(c.xp.spent)}</span></div></div><div class="resource"><div class="resource-head"><span class="resource-name">Available</span><span class="resource-value">${avail}</span></div></div><div class="resource"><div class="resource-head"><span class="resource-name">Renown</span><span class="resource-value">${n(c.renown.value)}</span></div></div></div>
+      <div style="margin-top:10px"><button class="btn primary" data-action="add-advance">＋ Record Advance</button></div>
+    </section><section class="card"><div class="card-title-row"><h2>Advancement History</h2></div><div class="list">${list}</div></section>`;
+  }
+
+  function bindViewEvents() {
+    main.querySelectorAll('[data-char-id]').forEach(b => b.onclick = () => { state.activeId=b.dataset.charId; saveState(); render(); });
+    main.querySelectorAll('[data-roll-char]').forEach(b => b.onclick = () => rollTest(CHAR_LABELS[b.dataset.rollChar], n(activeChar().characteristics[b.dataset.rollChar])));
+    main.querySelectorAll('[data-roll-skill]').forEach(b => b.onclick = () => { const s=activeChar().skills.find(x=>x.id===b.dataset.rollSkill); if(s) rollTest(s.name,n(activeChar().characteristics[s.characteristic])+n(s.training)); });
+    main.querySelectorAll('[data-action]').forEach(b => b.onclick = () => handleAction(b.dataset.action));
+    main.querySelectorAll('[data-edit-armour]').forEach(b => b.onclick = () => editArmour(b.dataset.editArmour));
+    main.querySelectorAll('[data-edit-weapon]').forEach(b => b.onclick = () => editWeapon(b.dataset.editWeapon));
+    main.querySelectorAll('[data-delete-weapon]').forEach(b => b.onclick = () => deleteItem('weapons',b.dataset.deleteWeapon,'weapon'));
+    main.querySelectorAll('[data-ammo-minus]').forEach(b => b.onclick = () => ammo(b.dataset.ammoMinus,-1));
+    main.querySelectorAll('[data-ammo-plus]').forEach(b => b.onclick = () => ammo(b.dataset.ammoPlus,1));
+    main.querySelectorAll('[data-reload]').forEach(b => b.onclick = () => reloadWeapon(b.dataset.reload));
+    main.querySelectorAll('[data-delete-effect]').forEach(b => b.onclick = () => deleteItem('effects',b.dataset.deleteEffect,'effect'));
+    main.querySelectorAll('[data-edit-skill]').forEach(b => b.onclick = () => editSkill(b.dataset.editSkill));
+    main.querySelectorAll('[data-edit-ability]').forEach(b => b.onclick = () => editAbility(b.dataset.editAbility));
+    main.querySelectorAll('[data-delete-ability]').forEach(b => b.onclick = () => deleteItem('abilities',b.dataset.deleteAbility,'ability'));
+    main.querySelectorAll('[data-edit-gear]').forEach(b => b.onclick = () => editGear(b.dataset.editGear));
+    main.querySelectorAll('[data-delete-gear]').forEach(b => b.onclick = () => deleteItem('gear',b.dataset.deleteGear,'gear'));
+    main.querySelectorAll('[data-delete-advance]').forEach(b => b.onclick = () => undoAdvance(b.dataset.deleteAdvance));
+    main.querySelectorAll('[data-resource-delta]').forEach(b => b.onclick = () => adjustResource(b.dataset.resourceDelta,n(b.dataset.delta)));
+    main.querySelectorAll('[data-resource-edit]').forEach(b => b.onclick = () => editSingleResource(b.dataset.resourceEdit,b.dataset.resourceEdit[0].toUpperCase()+b.dataset.resourceEdit.slice(1)));
+  }
+
+  function handleAction(action) {
+    const map = {
+      'new-character':newCharacter,
+      'portrait':choosePortrait,
+      'edit-characteristics':editCharacteristics,
+      'edit-resources':editResources,
+      'edit-profile':editProfile,
+      'edit-progression':editProgression,
+      'edit-story':editStory,
+      'wounds':()=>editSingleResource('wounds','Wounds'),
+      'fate':()=>editSingleResource('fate','Fate Points'),
+      'fatigue':()=>editSingleResource('fatigue','Fatigue'),
+      'cohesion':()=>editSingleResource('cohesion','Cohesion'),
+      'initiative':rollInitiative,
+      'add-effect':addEffect,
+      'add-weapon':()=>editWeapon(),
+      'compendium-weapons':()=>openCompendium('Weapon'),
+      'armour-notes':editArmourNotes,
+      'add-skill':()=>editSkill(),
+      'compendium-skills':()=>openCompendium('Skill'),
+      'add-ability':()=>editAbility(),
+      'compendium-abilities':()=>openCompendium('Ability'),
+      'add-gear':()=>editGear(),
+      'compendium-gear':()=>openCompendium('Gear'),
+      'add-advance':addAdvance
+    };
+    map[action]?.();
+  }
+
+  function newCharacter() {
+    openModal('Create Battle-Brother', `<form id="newCharForm">${field('Name','newName','New Battle-Brother')}${field('Chapter','newChapter','')}${field('Speciality','newSpec','')}
+      <div class="modal-actions"><button type="button" class="btn" data-cancel>Cancel</button><button class="btn primary" type="submit">Create</button></div></form>`, () => {
+      modalBody.querySelector('[data-cancel]').onclick=closeModal;
+      el('newCharForm').onsubmit = e => { e.preventDefault(); const c=createCharacter(el('newName').value.trim()||'New Battle-Brother'); c.chapter=el('newChapter').value.trim(); c.speciality=el('newSpec').value.trim(); state.characters.push(c); state.activeId=c.id; recordActivity('Personnel file opened. Battle-Brother entered into the Watch Fortress archive.','system'); saveState(); closeModal(); setView('overview'); showToast('Battle-Brother created'); };
+    });
+  }
+
+  function editProfile() {
+    const c=activeChar();
+    openModal('Service Record', `<form id="profileForm"><div class="field-grid two">${field('Name','pName',c.name)}${field('Chapter','pChapter',c.chapter)}${field('Speciality','pSpec',c.speciality)}${field('Rank','pRank',c.rank)}${field('Squad Role','pRole',c.squadRole)}${field('Personal Demeanour','pDem',c.demeanour)}${field('Chapter Demeanour','pCDem',c.chapterDemeanour)}</div><div class="modal-actions"><button type="button" class="btn danger" data-delete-char>Delete Character</button><button class="btn primary" type="submit">Save</button></div></form>`,()=>{
+      el('profileForm').onsubmit=e=>{e.preventDefault();Object.assign(c,{name:el('pName').value.trim()||c.name,chapter:el('pChapter').value.trim(),speciality:el('pSpec').value.trim(),rank:el('pRank').value.trim(),squadRole:el('pRole').value.trim(),demeanour:el('pDem').value.trim(),chapterDemeanour:el('pCDem').value.trim()});saveState();closeModal();render();showToast('Service record updated');};
+      modalBody.querySelector('[data-delete-char]').onclick=()=>confirmDeleteCharacter(c);
+    });
+  }
+
+  function confirmDeleteCharacter(c) {
+    openModal('Delete Character', `<p class="section-note">Delete <strong>${esc(c.name)}</strong>? This cannot be undone unless you have an exported backup.</p><div class="modal-actions"><button class="btn" data-cancel>Cancel</button><button class="btn danger" data-confirm>Delete</button></div>`,()=>{
+      modalBody.querySelector('[data-cancel]').onclick=closeModal;
+      modalBody.querySelector('[data-confirm]').onclick=()=>{
+        const deletingActive = state.activeId === c.id;
+        state.characters = state.characters.filter(x=>x.id!==c.id);
+        if (deletingActive || !state.characters.some(x=>x.id===state.activeId)) {
+          state.activeId = state.characters[0]?.id || null;
+        }
+        saveState();
+        closeModal();
+        setView('overview');
+        showToast('Character deleted');
+      };
+    });
+  }
+
+  function editCharacteristics() {
+    const c=activeChar();
+    openModal('Characteristics', `<form id="charForm"><div class="field-grid three">${CHAR_KEYS.map(k=>field(`${k} — ${CHAR_LABELS[k]}`,`ch_${k}`,c.characteristics[k],'number','min="1" max="100" inputmode="numeric"')).join('')}</div><div class="modal-actions"><button class="btn primary" type="submit">Save</button></div></form>`,()=>{
+      el('charForm').onsubmit=e=>{e.preventDefault();CHAR_KEYS.forEach(k=>c.characteristics[k]=clamp(n(el(`ch_${k}`).value,30),1,100));saveState();closeModal();render();showToast('Characteristics saved');};
+    });
+  }
+
+  function editResources() {
+    const c=activeChar(); const keys=[['wounds','Wounds'],['fate','Fate'],['fatigue','Fatigue'],['cohesion','Cohesion'],['insanity','Insanity'],['corruption','Corruption']];
+    openModal('Resources', `<form id="resForm"><div class="field-grid two">${keys.map(([k,label])=>`<div class="list-item"><div class="item-title">${label}</div><div class="inline-fields" style="margin-top:8px">${field('Current',`r_${k}_c`,c.resources[k].current,'number','inputmode="numeric"')}${field('Maximum',`r_${k}_m`,c.resources[k].max,'number','inputmode="numeric"')}</div></div>`).join('')}</div><div class="modal-actions"><button class="btn primary" type="submit">Save</button></div></form>`,()=>{
+      el('resForm').onsubmit=e=>{e.preventDefault();keys.forEach(([k])=>{c.resources[k].current=n(el(`r_${k}_c`).value);c.resources[k].max=Math.max(0,n(el(`r_${k}_m`).value));});saveState();closeModal();render();showToast('Resources updated');};
+    });
+  }
+
+  function editSingleResource(key,label) {
+    const r=activeChar().resources[key];
+    openModal(label, `<form id="oneResForm"><div class="inline-fields">${field('Current','oneCur',r.current,'number','inputmode="numeric"')}${field('Maximum','oneMax',r.max,'number','inputmode="numeric"')}</div><div class="modal-actions"><button type="button" class="btn" data-minus>−1</button><button type="button" class="btn" data-plus>＋1</button><button class="btn primary" type="submit">Save</button></div></form>`,()=>{
+      modalBody.querySelector('[data-minus]').onclick=()=>el('oneCur').value=n(el('oneCur').value)-1;
+      modalBody.querySelector('[data-plus]').onclick=()=>el('oneCur').value=n(el('oneCur').value)+1;
+      el('oneResForm').onsubmit=e=>{e.preventDefault();r.current=n(el('oneCur').value);r.max=Math.max(0,n(el('oneMax').value));saveState();closeModal();render();};
+    });
+  }
+
+  function editProgression() {
+    const c=activeChar();
+    openModal('Progression', `<form id="progForm"><div class="field-grid two">${field('XP Earned','xpEarned',c.xp.earned,'number','min="0" inputmode="numeric"')}${field('XP Spent','xpSpent',c.xp.spent,'number','min="0" inputmode="numeric"')}${field('Renown Value','renownValue',c.renown.value,'number','min="0" inputmode="numeric"')}${field('Renown Label / Tier','renownLabel',c.renown.label)}</div><div class="modal-actions"><button class="btn primary" type="submit">Save</button></div></form>`,()=>{
+      el('progForm').onsubmit=e=>{e.preventDefault();c.xp.earned=Math.max(0,n(el('xpEarned').value));c.xp.spent=Math.max(0,n(el('xpSpent').value));c.renown.value=Math.max(0,n(el('renownValue').value));c.renown.label=el('renownLabel').value.trim();saveState();closeModal();render();};
+    });
+  }
+
+  function editStory() {
+    const c=activeChar();
+    openModal('Past & Campaign Notes', `<form id="storyForm">${area('Past Event / Background','past',c.past,4)}${area('Campaign Notes','notes',c.notes,7)}<div class="modal-actions"><button class="btn primary" type="submit">Save</button></div></form>`,()=>{
+      el('storyForm').onsubmit=e=>{e.preventDefault();c.past=el('past').value;c.notes=el('notes').value;saveState();closeModal();render();};
+    });
+  }
+
+  function choosePortrait() { pendingPortraitCharId=activeChar().id; portraitFile.click(); }
+
+  portraitFile.addEventListener('change', async () => {
+    const f=portraitFile.files?.[0]; if(!f||!pendingPortraitCharId) return;
+    try { const data=await resizeImage(f,320); const c=state.characters.find(x=>x.id===pendingPortraitCharId); if(c){c.portrait=data;saveState();render();showToast('Portrait updated');} } catch(e){showToast('Could not read image');}
+    portraitFile.value=''; pendingPortraitCharId=null;
+  });
+
+  function resizeImage(file,maxSize) {
+    return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onerror=reject;reader.onload=()=>{const img=new Image();img.onerror=reject;img.onload=()=>{const scale=Math.min(1,maxSize/Math.max(img.width,img.height));const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL('image/jpeg',.82));};img.src=reader.result;};reader.readAsDataURL(file);});
+  }
+
+  function rollTest(label, baseTarget) {
+    openModal(`${label} Test`, `<form id="rollForm"><p class="section-note">Base target: <strong>${baseTarget}</strong>. Apply the situational modifier your GM calls for.</p><div class="inline-fields">${field('Modifier','rollMod',0,'number','step="10" inputmode="numeric"')}${field('Manual Roll (optional)','manualRoll','','number','min="1" max="100" inputmode="numeric"')}</div><div class="modal-actions"><button class="btn primary" type="submit">Roll d100</button></div></form>`,()=>{
+      el('rollForm').onsubmit=e=>{e.preventDefault();const mod=n(el('rollMod').value);const manual=el('manualRoll').value.trim();const roll=manual?clamp(n(manual),1,100):Math.floor(Math.random()*100)+1;showRollResult(label,baseTarget,mod,roll);};
+    });
+  }
+
+  function showRollResult(label,base,mod,roll) {
+    const target=clamp(base+mod,1,100); const success=roll<=target; const margin=Math.abs(target-roll); const degrees=1+Math.floor(margin/10); recordActivity(`${label}: rolled ${roll} vs ${target} — ${success?'SUCCESS':'FAILURE'}`,'roll'); saveState();
+    modalTitle.textContent=`${label} Result`;
+    modalBody.innerHTML=`<div class="roll-result"><div class="eyebrow">Target ${target} (${mod>=0?'+':''}${mod})</div><div class="roll-number ${success?'success':'failure'}">${String(roll).padStart(2,'0')}</div><div class="roll-badge">${success?'SUCCESS':'FAILURE'}</div><div class="roll-detail">Margin ${success?'+':'−'}${margin} • ${degrees} degree${degrees===1?'':'s'} by 10-point margin</div></div><p class="section-note" style="text-align:center">The app shows a quick margin-based degree count. Use your table’s exact rule interpretation where a sourcebook rule or special ability changes the result.</p><div class="modal-actions"><button class="btn" data-reroll>Roll Again</button><button class="btn primary" data-done>Done</button></div>`;
+    modalBody.querySelector('[data-reroll]').onclick=()=>showRollResult(label,base,mod,Math.floor(Math.random()*100)+1);
+    modalBody.querySelector('[data-done]').onclick=closeModal;
+  }
+
+  function quickRoll() {
+    const roll=Math.floor(Math.random()*100)+1; recordActivity(`Quick d100: ${roll}`,'roll'); saveState();
+    openModal('Quick d100', `<div class="roll-result"><div class="eyebrow">Unmodified Roll</div><div class="roll-number">${String(roll).padStart(2,'0')}</div></div><div class="modal-actions"><button class="btn" data-again>Roll Again</button><button class="btn primary" data-done>Done</button></div>`,()=>{
+      modalBody.querySelector('[data-again]').onclick=quickRoll; modalBody.querySelector('[data-done]').onclick=closeModal;
+    });
+  }
+
+  function rollInitiative() {
+    const c=activeChar(); const d10=Math.floor(Math.random()*10)+1; const agBonus=Math.floor(n(c.characteristics.Ag)/10); const total=d10+agBonus+n(c.initiativeBonus); recordActivity(`Initiative: ${total} (${d10}+${agBonus}+${n(c.initiativeBonus)})`,'roll'); saveState();
+    openModal('Initiative', `<div class="roll-result"><div class="eyebrow">d10 + Ag Bonus + Modifier</div><div class="roll-number">${total}</div><div class="roll-detail">${d10} + ${agBonus} + ${n(c.initiativeBonus)}</div></div><div class="modal-actions"><button class="btn" data-mod>Set Modifier</button><button class="btn primary" data-done>Done</button></div>`,()=>{
+      modalBody.querySelector('[data-done]').onclick=closeModal;
+      modalBody.querySelector('[data-mod]').onclick=()=>{ const val=prompt('Initiative modifier',String(c.initiativeBonus)); if(val!==null){c.initiativeBonus=n(val);saveState();closeModal();rollInitiative();} };
+    });
+  }
+
+  function editArmour(id) {
+    const c=activeChar(); const a=c.armour.find(x=>x.id===id); if(!a)return;
+    openModal(`${a.location} Armour`, `<form id="armourForm">${field('Armour Points','armourAP',a.ap,'number','min="0" inputmode="numeric"')}${area('Notes','armourLocNotes',a.notes,3)}<div class="modal-actions"><button class="btn primary" type="submit">Save</button></div></form>`,()=>{
+      el('armourForm').onsubmit=e=>{e.preventDefault();a.ap=Math.max(0,n(el('armourAP').value));a.notes=el('armourLocNotes').value;saveState();closeModal();render();};
+    });
+  }
+
+  function editArmourNotes() {
+    const c=activeChar();
+    openModal('Power Armour Notes', `<form id="armourNotesForm">${area('Power Armour History / Special Result','paHistory',c.powerArmourHistory,4)}${area('General Armour Notes','paNotes',c.armourNotes,5)}<div class="modal-actions"><button class="btn primary" type="submit">Save</button></div></form>`,()=>{
+      el('armourNotesForm').onsubmit=e=>{e.preventDefault();c.powerArmourHistory=el('paHistory').value;c.armourNotes=el('paNotes').value;saveState();closeModal();render();};
+    });
+  }
+
+  function editWeapon(id, template=null) {
+    const c=activeChar(); const existing=id?c.weapons.find(x=>x.id===id):null;
+    const w=existing || {id:uid(),name:template?.name||'',class:template?.data?.class||'Ranged',range:template?.data?.range||'',rof:template?.data?.rof||'',damage:template?.data?.damage||'',pen:template?.data?.pen||'',clipMax:n(template?.data?.clipMax),clipCurrent:n(template?.data?.clipMax),reload:template?.data?.reload||'',qualities:template?.data?.qualities||'',requisition:'',source:template?.source||'',notes:template?.notes||''};
+    openModal(existing?'Edit Weapon':'Add Weapon', `<form id="weaponForm"><div class="field-grid two">${field('Name','wName',w.name)}${selectField('Class','wClass',['Ranged','Melee','Thrown','Heavy','Other'],w.class)}${field('Range','wRange',w.range)}${field('Rate of Fire','wRof',w.rof)}${field('Damage','wDamage',w.damage)}${field('Penetration','wPen',w.pen)}${field('Clip Size','wClipMax',w.clipMax,'number','min="0" inputmode="numeric"')}${field('Current Ammo','wClipCurrent',w.clipCurrent,'number','min="0" inputmode="numeric"')}${field('Reload','wReload',w.reload)}${field('Requisition','wReq',w.requisition)}${field('Qualities','wQual',w.qualities)}${field('Source / Page','wSource',w.source)}</div>${area('Notes','wNotes',w.notes,3)}<div class="modal-actions"><button class="btn primary" type="submit">${existing?'Save':'Add Weapon'}</button></div></form>`,()=>{
+      el('weaponForm').onsubmit=e=>{e.preventDefault();Object.assign(w,{name:el('wName').value.trim()||'Unnamed Weapon',class:el('wClass').value,range:el('wRange').value.trim(),rof:el('wRof').value.trim(),damage:el('wDamage').value.trim(),pen:el('wPen').value.trim(),clipMax:Math.max(0,n(el('wClipMax').value)),clipCurrent:Math.max(0,n(el('wClipCurrent').value)),reload:el('wReload').value.trim(),requisition:el('wReq').value.trim(),qualities:el('wQual').value.trim(),source:el('wSource').value.trim(),notes:el('wNotes').value});if(!existing)c.weapons.push(w);saveState();closeModal();render();showToast(existing?'Weapon updated':'Weapon added');};
+    });
+  }
+
+  function ammo(id,delta){const w=activeChar().weapons.find(x=>x.id===id);if(!w)return;const before=n(w.clipCurrent);w.clipCurrent=clamp(before+delta,0,Math.max(n(w.clipMax),before+Math.max(delta,0)));if(w.clipCurrent!==before)recordActivity(`${w.name}: ammo ${before} → ${w.clipCurrent}`,'armoury');saveState();render();}
+  function reloadWeapon(id){const w=activeChar().weapons.find(x=>x.id===id);if(!w)return;w.clipCurrent=Math.max(0,n(w.clipMax));recordActivity(`${w.name}: reloaded to ${w.clipCurrent}`,'armoury');saveState();render();showToast(`${w.name} reloaded`);}
+
+  function addEffect(){
+    openModal('Add Temporary Effect', `<form id="effectForm">${field('Name','eName','')}${area('Notes / Duration','eNotes','',3)}<div class="modal-actions"><button class="btn primary" type="submit">Add</button></div></form>`,()=>{el('effectForm').onsubmit=e=>{e.preventDefault();activeChar().effects.push({id:uid(),name:el('eName').value.trim()||'Effect',notes:el('eNotes').value});saveState();closeModal();render();};});
+  }
+
+  function editSkill(id, template=null) {
+    const c=activeChar(); const existing=id?c.skills.find(x=>x.id===id):null;
+    const s=existing||{id:uid(),name:template?.name||'',characteristic:template?.characteristic||'Int',training:0,source:template?.source||'',notes:template?.notes||''};
+    openModal(existing?'Edit Skill':'Add Skill', `<form id="skillForm"><div class="field-grid two">${field('Name','sName',s.name)}${selectField('Characteristic','sChar',CHAR_KEYS.map(k=>({value:k,label:`${k} — ${CHAR_LABELS[k]}`})),s.characteristic)}${selectField('Training Modifier','sTraining',[{value:-20,label:'−20'},{value:0,label:'±0'},{value:10,label:'+10'},{value:20,label:'+20'},{value:30,label:'+30'}],s.training)}${field('Source / Page','sSource',s.source)}</div>${area('Notes','sNotes',s.notes,3)}<div class="modal-actions">${existing?'<button type="button" class="btn danger" data-delete>Delete</button>':''}<button class="btn primary" type="submit">Save</button></div></form>`,()=>{
+      el('skillForm').onsubmit=e=>{e.preventDefault();Object.assign(s,{name:el('sName').value.trim()||'Unnamed Skill',characteristic:el('sChar').value,training:n(el('sTraining').value),source:el('sSource').value.trim(),notes:el('sNotes').value});if(!existing)c.skills.push(s);saveState();closeModal();render();}; if(existing)modalBody.querySelector('[data-delete]').onclick=()=>{deleteItem('skills',s.id,'skill');closeModal();};
+    });
+  }
+
+  function editAbility(id, template=null) {
+    const c=activeChar(); const existing=id?c.abilities.find(x=>x.id===id):null;
+    const a=existing||{id:uid(),name:template?.name||'',type:template?.category==='Ability'?'Ability':'Talent',source:template?.source||'',notes:template?.notes||''};
+    openModal(existing?'Edit Ability':'Add Ability / Talent', `<form id="abilityForm"><div class="field-grid two">${field('Name','aName',a.name)}${selectField('Type','aType',['Talent','Trait','Ability','Solo Mode','Squad Mode','Honour','Distinction','Other'],a.type)}${field('Source / Page','aSource',a.source)}</div>${area('Quick Notes','aNotes',a.notes,5)}<div class="modal-actions"><button class="btn primary" type="submit">Save</button></div></form>`,()=>{el('abilityForm').onsubmit=e=>{e.preventDefault();Object.assign(a,{name:el('aName').value.trim()||'Unnamed Ability',type:el('aType').value,source:el('aSource').value.trim(),notes:el('aNotes').value});if(!existing)c.abilities.push(a);saveState();closeModal();render();};});
+  }
+
+  function editGear(id, template=null) {
+    const c=activeChar(); const existing=id?c.gear.find(x=>x.id===id):null;
+    const g=existing||{id:uid(),name:template?.name||'',qty:1,requisition:'',missionIssued:false,source:template?.source||'',notes:template?.notes||''};
+    openModal(existing?'Edit Wargear':'Add Wargear', `<form id="gearForm"><div class="field-grid two">${field('Name','gName',g.name)}${field('Quantity','gQty',g.qty,'number','min="1" inputmode="numeric"')}${field('Requisition','gReq',g.requisition)}${field('Source / Page','gSource',g.source)}</div><label class="checkbox-row" style="margin:10px 0"><input type="checkbox" id="gMission" ${g.missionIssued?'checked':''}> Mission-issued equipment</label>${area('Notes','gNotes',g.notes,4)}<div class="modal-actions"><button class="btn primary" type="submit">Save</button></div></form>`,()=>{el('gearForm').onsubmit=e=>{e.preventDefault();Object.assign(g,{name:el('gName').value.trim()||'Unnamed Gear',qty:Math.max(1,n(el('gQty').value,1)),requisition:el('gReq').value.trim(),missionIssued:el('gMission').checked,source:el('gSource').value.trim(),notes:el('gNotes').value});if(!existing)c.gear.push(g);saveState();closeModal();render();};});
+  }
+
+  function addAdvance() {
+    const c=activeChar();
+    openModal('Record Advance', `<form id="advanceForm"><div class="field-grid two">${field('Advance','adName','')}${field('XP Cost','adCost',0,'number','min="0" inputmode="numeric"')}${field('Source / Page','adSource','')}</div>${area('Notes','adNotes','',3)}<label class="checkbox-row" style="margin-top:10px"><input type="checkbox" id="adAddSpent" checked> Add cost to XP spent</label><div class="modal-actions"><button class="btn primary" type="submit">Record</button></div></form>`,()=>{el('advanceForm').onsubmit=e=>{e.preventDefault();const cost=Math.max(0,n(el('adCost').value));c.advances.push({id:uid(),name:el('adName').value.trim()||'Advance',cost,source:el('adSource').value.trim(),notes:el('adNotes').value,date:new Date().toISOString(),counted:el('adAddSpent').checked});if(el('adAddSpent').checked)c.xp.spent+=cost;saveState();closeModal();render();showToast('Advance recorded');};});
+  }
+
+  function undoAdvance(id){const c=activeChar();const a=c.advances.find(x=>x.id===id);if(!a)return;if(a.counted)c.xp.spent=Math.max(0,n(c.xp.spent)-n(a.cost));c.advances=c.advances.filter(x=>x.id!==id);saveState();render();showToast('Advance removed');}
+
+  function deleteItem(arrayKey,id,label){const c=activeChar();c[arrayKey]=c[arrayKey].filter(x=>x.id!==id);saveState();render();showToast(`${label[0].toUpperCase()+label.slice(1)} removed`);}
+
+  function openCompendium(category='') {
+    const cats=['All','Skill','Ability','Talent','Trait','Weapon','Gear','Other'];
+    const initial=category||'All';
+    openModal('Compendium', `<div class="searchbar"><input class="input" id="compSearch" placeholder="Search names, sources, notes…"><button class="btn primary" id="addCompEntry">＋ Entry</button></div><div class="tabs" id="compTabs">${cats.map(x=>`<button class="btn small ${x===initial?'active':''}" data-cat="${x}">${x}</button>`).join('')}</div><div id="compList"></div><div class="divider"></div><p class="section-note">This build ships with only generic starter templates. Import your own source packs or add references from books you own.</p><div class="modal-actions"><button class="btn" id="importPackBtn">Import Pack</button><button class="btn" id="exportPackBtn">Export Compendium</button></div>`,()=>{
+      let cat=initial;
+      const rerender=()=>{const q=el('compSearch').value.trim().toLowerCase();const entries=state.compendium.filter(x=>(cat==='All'||x.category===cat)&&(!q||`${x.name} ${x.source} ${x.notes}`.toLowerCase().includes(q)));el('compList').innerHTML=entries.length?`<div class="list">${entries.map(x=>`<div class="list-item"><div class="list-row"><div><div class="item-title">${esc(x.name)}</div><div class="item-sub">${esc(x.category)} ${x.characteristic?`• ${esc(x.characteristic)}`:''}</div><div class="source">${esc(x.source||'Custom')}</div></div><div class="item-actions"><button class="btn small primary" data-add-comp="${x.id}">Add</button><button class="btn small" data-edit-comp="${x.id}">Edit</button></div></div>${x.notes?`<div class="item-sub" style="margin-top:8px">${esc(x.notes)}</div>`:''}</div>`).join('')}</div>`:`<div class="empty">No matching compendium entries.</div>`;
+        el('compList').querySelectorAll('[data-add-comp]').forEach(b=>b.onclick=()=>addCompendiumToCharacter(b.dataset.addComp));
+        el('compList').querySelectorAll('[data-edit-comp]').forEach(b=>b.onclick=()=>editCompendiumEntry(b.dataset.editComp,()=>openCompendium(cat)));
+      };
+      el('compSearch').oninput=rerender;
+      el('compTabs').querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{cat=b.dataset.cat;el('compTabs').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x.dataset.cat===cat));rerender();});
+      el('addCompEntry').onclick=()=>editCompendiumEntry(null,()=>openCompendium(cat));
+      el('importPackBtn').onclick=()=>{closeModal();importFile.dataset.mode='compendium';importFile.click();};
+      el('exportPackBtn').onclick=exportCompendium;
+      rerender();
+    });
+  }
+
+  function addCompendiumToCharacter(id) {
+    const entry=state.compendium.find(x=>x.id===id); if(!entry)return;
+    if(entry.category==='Skill') { closeModal(); editSkill(null,entry); }
+    else if(entry.category==='Weapon') { closeModal(); editWeapon(null,entry); }
+    else if(entry.category==='Gear') { closeModal(); editGear(null,entry); }
+    else { closeModal(); editAbility(null,entry); }
+  }
+
+  function editCompendiumEntry(id, onDone) {
+    const existing=id?state.compendium.find(x=>x.id===id):null;
+    const x=existing||{id:uid(),category:'Other',name:'',characteristic:'',source:'Custom',notes:'',data:{}};
+    openModal(existing?'Edit Compendium Entry':'Add Compendium Entry', `<form id="compEntryForm"><div class="field-grid two">${field('Name','ceName',x.name)}${selectField('Category','ceCat',['Skill','Ability','Talent','Trait','Weapon','Gear','Other'],x.category)}${selectField('Characteristic (for skills)','ceChar',[{value:'',label:'—'}].concat(CHAR_KEYS.map(k=>({value:k,label:k}))),x.characteristic||'')}${field('Source / Page','ceSource',x.source)}</div>${area('Notes / Quick Reference','ceNotes',x.notes,5)}<div id="weaponTemplateFields"></div><div class="modal-actions">${existing?'<button type="button" class="btn danger" data-delete>Delete</button>':''}<button class="btn primary" type="submit">Save</button></div></form>`,()=>{
+      const wf=()=>{const isW=el('ceCat').value==='Weapon';el('weaponTemplateFields').innerHTML=isW?`<div class="divider"></div><div class="field-grid two">${field('Class','ceWClass',x.data?.class||'Ranged')}${field('Range','ceWRange',x.data?.range||'')}${field('Rate of Fire','ceWRof',x.data?.rof||'')}${field('Damage','ceWDamage',x.data?.damage||'')}${field('Penetration','ceWPen',x.data?.pen||'')}${field('Clip Size','ceWClip',x.data?.clipMax||0,'number','min="0"')}${field('Reload','ceWReload',x.data?.reload||'')}${field('Qualities','ceWQual',x.data?.qualities||'')}</div>`:'';};el('ceCat').onchange=wf;wf();
+      el('compEntryForm').onsubmit=e=>{e.preventDefault();x.name=el('ceName').value.trim()||'Unnamed Entry';x.category=el('ceCat').value;x.characteristic=el('ceChar').value;x.source=el('ceSource').value.trim();x.notes=el('ceNotes').value;if(x.category==='Weapon')x.data={class:el('ceWClass').value.trim(),range:el('ceWRange').value.trim(),rof:el('ceWRof').value.trim(),damage:el('ceWDamage').value.trim(),pen:el('ceWPen').value.trim(),clipMax:Math.max(0,n(el('ceWClip').value)),reload:el('ceWReload').value.trim(),qualities:el('ceWQual').value.trim()};if(!existing)state.compendium.push(x);saveState();closeModal();showToast('Compendium saved');onDone?.();};
+      if(existing)modalBody.querySelector('[data-delete]').onclick=()=>{state.compendium=state.compendium.filter(y=>y.id!==x.id);saveState();closeModal();onDone?.();};
+    });
+  }
+
+  function openMenu() {
+    const c=activeChar();
+    openModal('Watch Fortress Menu', `<div class="menu-grid"><button class="btn" data-menu="characters"><strong>Characters</strong><small>Switch, create, duplicate</small></button><button class="btn" data-menu="compendium"><strong>Compendium</strong><small>Custom source packs</small></button><button class="btn" data-menu="export"><strong>Export Backup</strong><small>All characters + library</small></button><button class="btn" data-menu="import"><strong>Import Backup</strong><small>Restore JSON data</small></button><button class="btn" data-menu="export-char"><strong>Export Character</strong><small>${esc(c?.name||'Active character')}</small></button><button class="btn" data-menu="about"><strong>About</strong><small>Version & local storage</small></button></div>`,()=>{
+      modalBody.querySelectorAll('[data-menu]').forEach(b=>b.onclick=()=>{const a=b.dataset.menu;if(a==='characters')characterManager();if(a==='compendium')openCompendium();if(a==='export')exportAll();if(a==='import'){closeModal();importFile.dataset.mode='all';importFile.click();}if(a==='export-char')exportCharacter();if(a==='about')about();});
+    });
+  }
+
+  function characterManager() {
+    const roster = state.characters.length
+      ? state.characters.map(c=>`<div class="list-item"><div class="list-row"><div><div class="item-title">${esc(c.name)}</div><div class="item-sub">${esc([c.chapter,c.speciality,c.rank].filter(Boolean).join(' • '))}</div></div><div class="item-actions"><button class="btn small" data-open-char="${c.id}">Open</button><button class="btn small" data-dup-char="${c.id}">Duplicate</button><button class="btn small danger" data-delete-char-id="${c.id}">Delete</button></div></div></div>`).join('')
+      : `<div class="empty">No Battle-Brothers in the Watch Fortress archive.</div>`;
+    openModal('Characters', `<div class="list">${roster}</div><div class="modal-actions"><button class="btn primary" data-new>＋ New Character</button></div>`,()=>{
+      modalBody.querySelectorAll('[data-open-char]').forEach(b=>b.onclick=()=>{state.activeId=b.dataset.openChar;saveState();closeModal();render();});
+      modalBody.querySelectorAll('[data-dup-char]').forEach(b=>b.onclick=()=>duplicateCharacter(b.dataset.dupChar));
+      modalBody.querySelectorAll('[data-delete-char-id]').forEach(b=>b.onclick=()=>{
+        const c = state.characters.find(x=>x.id===b.dataset.deleteCharId);
+        if (c) confirmDeleteCharacter(c);
+      });
+      modalBody.querySelector('[data-new]').onclick=newCharacter;
+    });
+  }
+
+  function duplicateCharacter(id){const original=state.characters.find(c=>c.id===id);if(!original)return;const copy=structuredClone(original);copy.id=uid();copy.name=`${original.name} Copy`;copy.portrait=original.portrait;['armour','weapons','gear','skills','abilities','advances','effects'].forEach(k=>copy[k]=(copy[k]||[]).map(x=>({...x,id:uid()})));state.characters.push(copy);state.activeId=copy.id;saveState();closeModal();render();showToast('Character duplicated');}
+
+  function downloadJSON(filename,data){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500);}
+  function safeName(s){return String(s||'deathwatch').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'deathwatch';}
+  function exportAll(){downloadJSON(`deathwatch-companion-backup-${new Date().toISOString().slice(0,10)}.json`,state);showToast('Backup exported');}
+  function exportCharacter(){const c=activeChar();if(!c){showToast('No character to export');return;}downloadJSON(`${safeName(c.name)}-character.json`,{type:'deathwatch-companion-character',version:VERSION,character:c});showToast('Character exported');}
+  function exportCompendium(){downloadJSON(`deathwatch-compendium-${new Date().toISOString().slice(0,10)}.json`,{type:'deathwatch-companion-compendium',version:VERSION,entries:state.compendium});showToast('Compendium exported');}
+
+  importFile.addEventListener('change', async()=>{
+    const f=importFile.files?.[0];if(!f)return;
+    try{const data=JSON.parse(await f.text());const mode=importFile.dataset.mode||'all';if(mode==='compendium'){const entries=Array.isArray(data)?data:data.entries;if(!Array.isArray(entries))throw new Error('No compendium entries');state.compendium=mergeCompendium(state.compendium,entries);saveState();showToast(`${entries.length} entries imported`);}
+      else if(data.type==='deathwatch-companion-character'&&data.character){const c=normalizeCharacter(data.character);c.id=uid();state.characters.push(c);state.activeId=c.id;saveState();render();showToast('Character imported');}
+      else if(Array.isArray(data.characters)){state={...defaultState(),...data};state.characters=data.characters.map(normalizeCharacter);state.compendium=Array.isArray(data.compendium)?data.compendium:structuredClone(STARTER_COMPENDIUM);state.activeId=state.characters.some(c=>c.id===data.activeId)?data.activeId:state.characters[0]?.id;if(!state.characters.length){const c=createCharacter();state.characters=[c];state.activeId=c.id;}saveState();render();showToast('Backup restored');}
+      else throw new Error('Unsupported file');
+    }catch(err){console.error(err);showToast('Import failed: unsupported JSON');}finally{importFile.value='';delete importFile.dataset.mode;}
+  });
+
+  function mergeCompendium(existing,incoming){const byKey=new Map(existing.map(x=>[`${x.category}|${x.name}|${x.source}`.toLowerCase(),x]));incoming.forEach(raw=>{if(!raw?.name)return;const x={...raw,id:raw.id||uid()};const key=`${x.category||'Other'}|${x.name}|${x.source||''}`.toLowerCase();if(!byKey.has(key)){existing.push(x);byKey.set(key,x);}});return existing;}
+
+  function about(){openModal('About Deathwatch Companion', `<p class="section-note"><strong>Version ${VERSION}</strong></p><p class="section-note">A local-first character companion prototype. Character data is stored in this browser/device using localStorage and can be exported as JSON.</p><p class="section-note">This app intentionally does not ship with copied rulebook text or complete proprietary item databases. Use source/page references and custom/imported entries for material you own.</p><p class="section-note">Install it from your browser’s “Add to Home Screen” / “Install App” option when served over HTTPS or localhost.</p><div class="modal-actions"><button class="btn" data-reset-starter>Restore Starter Library Entries</button><button class="btn primary" data-done>Done</button></div>`,()=>{modalBody.querySelector('[data-done]').onclick=closeModal;modalBody.querySelector('[data-reset-starter]').onclick=()=>{state.compendium=mergeCompendium(state.compendium,structuredClone(STARTER_COMPENDIUM));saveState();showToast('Starter entries restored');};});}
+
+  closeModalBtn.onclick=closeModal;
+  backdrop.addEventListener('click',e=>{if(e.target===backdrop)closeModal();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!backdrop.classList.contains('hidden'))closeModal();});
+  el('rollBtn').onclick=quickRoll;
+  el('menuBtn').onclick=openMenu;
+  el('brandHome').onclick=()=>setView('overview');
+  el('brandHome').onkeydown=e=>{if(e.key==='Enter'||e.key===' ')setView('overview');};
+  nav.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.view));
+
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+    window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Service worker registration failed',err)));
+  }
+
+  view = state.settings.lastView || 'overview';
+  [...nav.querySelectorAll('[data-view]')].forEach(b=>b.classList.toggle('active',b.dataset.view===view));
+  render();
+})();
+
+  
+</script>
+</body>
+</html>
